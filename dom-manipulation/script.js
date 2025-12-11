@@ -5,8 +5,8 @@ let quotes = [
   { text: "Great things take time.", category: "Inspiration" }
 ];
 
-// Function to show a random quote
-function showRandomQuote() {
+// Function to display a random quote (required name: displayRandomQuote)
+function displayRandomQuote() {
   const randomIndex = Math.floor(Math.random() * quotes.length);
   const quote = quotes[randomIndex];
 
@@ -17,10 +17,10 @@ function showRandomQuote() {
   `;
 }
 
-// Event listener for the "Show New Quote" button
-document.getElementById("newQuote").addEventListener("click", showRandomQuote);
+// Event listener for the “Show New Quote” button
+document.getElementById("newQuote").addEventListener("click", displayRandomQuote);
 
-// Function to add a new quote
+// Function to add a new quote (required name: addQuote)
 function addQuote() {
   const textInput = document.getElementById("newQuoteText").value;
   const categoryInput = document.getElementById("newQuoteCategory").value;
@@ -30,15 +30,15 @@ function addQuote() {
     return;
   }
 
-  // Add new quote to array
+  // Add new quote to the quotes array
   quotes.push({
     text: textInput,
     category: categoryInput
   });
 
-  // Update DOM (clear inputs)
+  // Update the DOM (clear input fields)
   document.getElementById("newQuoteText").value = "";
   document.getElementById("newQuoteCategory").value = "";
 
-  alert("Quote added!");
+  alert("Quote added successfully!");
 }
