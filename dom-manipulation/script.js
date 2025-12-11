@@ -1,4 +1,4 @@
-// Initialize quotes from localStorage or default quotes
+// Default quotes or from localStorage
 let quotes = JSON.parse(localStorage.getItem('quotes')) || [
     { text: "The best way to get started is to quit talking and begin doing.", category: "Motivation" },
     { text: "Life is what happens when you're busy making other plans.", category: "Life" },
@@ -17,11 +17,11 @@ function populateCategories() {
     const categoryFilter = document.getElementById('categoryFilter');
     const lastSelectedCategory = localStorage.getItem('lastSelectedCategory') || 'all';
 
-    // Clear existing options except "All Categories"
+    // Reset dropdown
     categoryFilter.innerHTML = '<option value="all">All Categories</option>';
 
-    const categories = [...new Set(quotes.map(q => q.category))];
-    categories.forEach(cat => {
+    const uniqueCategories = [...new Set(quotes.map(q => q.category))];
+    uniqueCategories.forEach(cat => {
         const option = document.createElement('option');
         option.value = cat;
         option.textContent = cat;
@@ -32,7 +32,7 @@ function populateCategories() {
     categoryFilter.value = lastSelectedCategory;
 }
 
-// Function required by the assignment
+// Function that filters quotes — required by assignment
 function filterQuote() {
     const selectedCategory = document.getElementById('categoryFilter').value;
 
@@ -42,12 +42,10 @@ function filterQuote() {
     const container = document.getElementById('quotesContainer');
     container.innerHTML = '';
 
-    // Filter quotes based on selection
     const filteredQuotes = selectedCategory === 'all'
         ? quotes
         : quotes.filter(q => q.category === selectedCategory);
 
-    // Display quotes
     filteredQuotes.forEach(q => {
         const quoteDiv = document.createElement('div');
         quoteDiv.className = 'quote';
@@ -58,10 +56,8 @@ function filterQuote() {
 
 // Add a new quote
 function addQuote() {
-    const textInput = document.getElementById('newQuoteText');
-    const categoryInput = document.getElementById('newQuoteCategory');
-    const text = textInput.value.trim();
-    const category = categoryInput.value.trim();
+    const text = document.getElementById('newQuoteText').value.trim();
+    const category = document.getElementById('newQuoteCategory').value.trim();
 
     if (!text || !category) {
         alert('Please enter both quote text and category.');
@@ -73,10 +69,10 @@ function addQuote() {
     populateCategories();
     filterQuote();
 
-    textInput.value = '';
-    categoryInput.value = '';
+    document.getElementById('newQuoteText').value = '';
+    document.getElementById('newQuoteCategory').value = '';
 }
 
-// Initial setup
+// Initialize app
 populateCategories();
 filterQuote();
