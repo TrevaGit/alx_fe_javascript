@@ -4,14 +4,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const categoryFilter = document.getElementById('category-filter');
     const localStorageKey = 'quotes';
 
-    // Initial quotes (if local storage is empty)
     const initialQuotes = [
         { id: 1, text: "Believe in yourself!", category: "inspiration" },
         { id: 2, text: "Life is what happens when you're busy making other plans.", category: "life" },
         { id: 3, text: "Why don’t scientists trust atoms? Because they make up everything!", category: "funny" }
     ];
 
-    // Load quotes from localStorage or set initial quotes
+    // Load quotes from localStorage
     function loadLocalQuotes() {
         let quotes = JSON.parse(localStorage.getItem(localStorageKey));
         if (!quotes) {
@@ -27,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem(localStorageKey, JSON.stringify(quotes));
     }
 
-    // Render quotes in the UI
+    // Render quotes in UI
     function renderQuotes(quotes) {
         const selectedCategory = categoryFilter.value;
         quoteList.innerHTML = '';
@@ -41,26 +40,39 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Fetch quotes from server (mock API)
-    async function fetchServerQuotes() {
+    async function fetchQuotesFromServer() {
         try {
             const response = await fetch('https://jsonplaceholder.typicode.com/posts?_limit=5');
             const data = await response.json();
-            // Map server data to quote objects (assign categories randomly for demo)
             return data.map(item => ({
                 id: item.id,
                 text: item.title,
                 category: ["inspiration", "funny", "life"][Math.floor(Math.random() * 3)]
             }));
         } catch (error) {
-            console.error('Error fetching server quotes:', error);
+            console.error('Error fetching quotes from server:', error);
             return [];
         }
     }
 
-    // Sync local and server data
-    async function syncData() {
+    // Post quotes to server (mock API)
+    async function postQuotesToServer(quotes) {
+        try {
+            await fetch('https://jsonplaceholder.typicode.com/posts', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(quotes)
+            });
+            // This is just simulation; no real server updates happen
+        } catch (error) {
+            console.error('Error posting quotes to server:', error);
+        }
+    }
+
+    // Sync quotes with server and resolve conflicts
+    async function syncQuotes() {
         const localQuotes = loadLocalQuotes();
-        const serverQuotes = await fetchServerQuotes();
+        const serverQuotes = await fetchQuotesFromServer();
 
         // Merge with server precedence
         const mergedQuotes = [...serverQuotes];
@@ -70,7 +82,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // Detect if any changes happened
         const prevLocal = JSON.stringify(localQuotes);
         const mergedString = JSON.stringify(mergedQuotes);
 
@@ -78,6 +89,7 @@ document.addEventListener('DOMContentLoaded', () => {
             saveLocalQuotes(mergedQuotes);
             renderQuotes(mergedQuotes);
             showNotification('Quotes updated from server!');
+            await postQuotesToServer(mergedQuotes); // optional: sync local changes to server
         }
     }
 
@@ -93,11 +105,11 @@ document.addEventListener('DOMContentLoaded', () => {
         renderQuotes(loadLocalQuotes());
     });
 
-    document.getElementById('sync-button').addEventListener('click', syncData);
+    document.getElementById('sync-button').addEventListener('click', syncQuotes);
 
     // Initial load
     loadLocalQuotes();
 
     // Periodic sync every 15 seconds
-    setInterval(syncData, 15000);
+    setInterval(syncQuotes, 15000);
 });
