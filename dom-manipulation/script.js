@@ -1,12 +1,33 @@
-// Quotes array
+// --- Local Storage Helpers ---
+
+// Save quotes array to local storage
+function saveQuotes() {
+  localStorage.setItem("quotes", JSON.stringify(quotes));
+}
+
+// Load quotes from localStorage if available
+function loadQuotes() {
+  const storedQuotes = localStorage.getItem("quotes");
+  if (storedQuotes) {
+    quotes = JSON.parse(storedQuotes);
+  }
+}
+
+// --- INITIALIZE APP ---
+
 let quotes = [
   { text: "Stay positive, work hard!", category: "Motivation" },
   { text: "Knowledge is power.", category: "Education" },
   { text: "Great things take time.", category: "Inspiration" }
 ];
 
-// Function to display a random quote (required name: displayRandomQuote)
-function displayRandomQuote() {
+// Load saved quotes first
+loadQuotes();
+
+// --- FUNCTIONS ---
+
+// Show random quote
+function showRandomQuote() {
   const randomIndex = Math.floor(Math.random() * quotes.length);
   const quote = quotes[randomIndex];
 
@@ -17,10 +38,10 @@ function displayRandomQuote() {
   `;
 }
 
-// Event listener for the “Show New Quote” button
-document.getElementById("newQuote").addEventListener("click", displayRandomQuote);
+// Event listener for "Show New Quote"
+document.getElementById("newQuote").addEventListener("click", showRandomQuote);
 
-// Function to add a new quote (required name: addQuote)
+// Add new quote
 function addQuote() {
   const textInput = document.getElementById("newQuoteText").value;
   const categoryInput = document.getElementById("newQuoteCategory").value;
@@ -30,15 +51,17 @@ function addQuote() {
     return;
   }
 
-  // Add new quote to the quotes array
+  // Add quote
   quotes.push({
     text: textInput,
     category: categoryInput
   });
 
-  // Update the DOM (clear input fields)
+  // Save to storage
+  saveQuotes();
+
+  // Clear inputs
   document.getElementById("newQuoteText").value = "";
   document.getElementById("newQuoteCategory").value = "";
 
-  alert("Quote added successfully!");
-}
+  alert("Quote added and saved!");
