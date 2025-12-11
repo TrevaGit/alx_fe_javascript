@@ -1,11 +1,32 @@
-// Step 1: Our quotes array (each quote has text + category)
+// --- Local Storage Helpers ---
+
+// Save quotes array to local storage
+function saveQuotes() {
+  localStorage.setItem("quotes", JSON.stringify(quotes));
+}
+
+// Load quotes from localStorage if available
+function loadQuotes() {
+  const storedQuotes = localStorage.getItem("quotes");
+  if (storedQuotes) {
+    quotes = JSON.parse(storedQuotes);
+  }
+}
+
+// --- INITIALIZE APP ---
+
 let quotes = [
   { text: "Stay positive, work hard!", category: "Motivation" },
   { text: "Knowledge is power.", category: "Education" },
   { text: "Great things take time.", category: "Inspiration" }
 ];
 
-// Step 2: Function to display a random quote
+// Load saved quotes first
+loadQuotes();
+
+// --- FUNCTIONS ---
+
+// Show random quote
 function showRandomQuote() {
   const randomIndex = Math.floor(Math.random() * quotes.length);
   const quote = quotes[randomIndex];
@@ -17,10 +38,10 @@ function showRandomQuote() {
   `;
 }
 
-// Step 3: Add event listener for the "Show New Quote" button
+// Event listener for "Show New Quote"
 document.getElementById("newQuote").addEventListener("click", showRandomQuote);
 
-// Step 4: Function to add a new quote
+// Add new quote
 function addQuote() {
   const textInput = document.getElementById("newQuoteText").value;
   const categoryInput = document.getElementById("newQuoteCategory").value;
@@ -30,15 +51,18 @@ function addQuote() {
     return;
   }
 
-  // Add the new quote into the array
+  // Add quote
   quotes.push({
     text: textInput,
     category: categoryInput
   });
 
-  // Clear input fields
+  // Save to storage
+  saveQuotes();
+
+  // Clear inputs
   document.getElementById("newQuoteText").value = "";
   document.getElementById("newQuoteCategory").value = "";
 
-  alert("Quote added successfully!");
+  alert("Quote added and saved!");
 }
