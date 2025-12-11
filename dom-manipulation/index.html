@@ -1,24 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Dynamic Quote Generator</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width:800px; margin:20px auto; padding:10px; }
+    #controls { margin-top:15px; }
+    #quoteDisplay { margin-top:20px; padding:12px; border:1px solid #ddd; border-radius:6px; min-height:60px; }
+    input[type="text"]{ padding:6px; margin-right:6px; }
+    button{ padding:6px 10px; margin-right:6px; }
+  </style>
 </head>
 <body>
   <h1>Dynamic Quote Generator</h1>
 
-  <!-- Where the quote will show -->
-  <div id="quoteDisplay"></div>
+  <!-- Display area -->
+  <div id="quoteDisplay">Click "Show New Quote" to begin.</div>
 
-  <!-- Button to show a new quote -->
-  <button id="newQuote">Show New Quote</button>
+  <!-- Primary controls -->
+  <div id="controls">
+    <button id="newQuote">Show New Quote</button>
+    <button id="showLastViewed">Show Last Viewed (session)</button>
+  </div>
 
-  <!-- Form to add new quotes -->
+  <!-- Add new quote -->
   <div style="margin-top:20px;">
     <input id="newQuoteText" type="text" placeholder="Enter a new quote" />
     <input id="newQuoteCategory" type="text" placeholder="Enter quote category" />
     <button onclick="addQuote()">Add Quote</button>
+  </div>
+
+  <!-- Import / Export JSON -->
+  <div style="margin-top:20px;">
+    <button id="exportJson">Export Quotes (JSON)</button>
+    <input type="file" id="importFile" accept=".json" onchange="importFromJsonFile(event)" />
   </div>
 
   <script src="script.js"></script>
