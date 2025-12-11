@@ -12,39 +12,42 @@ function saveQuotes() {
     localStorage.setItem('quotes', JSON.stringify(quotes));
 }
 
-// Populate categories dynamically in the filter dropdown
+// Populate categories dynamically
 function populateCategories() {
     const categoryFilter = document.getElementById('categoryFilter');
-    const selectedCategory = localStorage.getItem('lastSelectedCategory') || 'all';
+    const lastSelectedCategory = localStorage.getItem('lastSelectedCategory') || 'all';
 
-    // Reset dropdown
+    // Clear existing options except "All Categories"
     categoryFilter.innerHTML = '<option value="all">All Categories</option>';
 
-    // Get unique categories
     const categories = [...new Set(quotes.map(q => q.category))];
-    categories.forEach(category => {
+    categories.forEach(cat => {
         const option = document.createElement('option');
-        option.value = category;
-        option.textContent = category;
+        option.value = cat;
+        option.textContent = cat;
         categoryFilter.appendChild(option);
     });
 
     // Restore last selected category
-    categoryFilter.value = selectedCategory;
+    categoryFilter.value = lastSelectedCategory;
 }
 
-// Display quotes based on selected category
-function filterQuotes() {
+// Function required by the assignment
+function filterQuote() {
     const selectedCategory = document.getElementById('categoryFilter').value;
+
+    // Save selected category to localStorage
     localStorage.setItem('lastSelectedCategory', selectedCategory);
 
     const container = document.getElementById('quotesContainer');
     container.innerHTML = '';
 
+    // Filter quotes based on selection
     const filteredQuotes = selectedCategory === 'all'
         ? quotes
         : quotes.filter(q => q.category === selectedCategory);
 
+    // Display quotes
     filteredQuotes.forEach(q => {
         const quoteDiv = document.createElement('div');
         quoteDiv.className = 'quote';
@@ -68,7 +71,7 @@ function addQuote() {
     quotes.push({ text, category });
     saveQuotes();
     populateCategories();
-    filterQuotes();
+    filterQuote();
 
     textInput.value = '';
     categoryInput.value = '';
@@ -76,4 +79,4 @@ function addQuote() {
 
 // Initial setup
 populateCategories();
-filterQuotes();
+filterQuote();
